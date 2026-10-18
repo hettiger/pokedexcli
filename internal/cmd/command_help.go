@@ -5,26 +5,26 @@ import (
 	"io"
 	"sort"
 	"strings"
+
+	"github.com/hettiger/pokedexcli/internal/cfg"
 )
 
-func commandHelp(out io.Writer) (Action, error) {
+func commandHelp(config *cfg.Config, out io.Writer) (cfg.Action, error) {
 	var message strings.Builder
 
 	message.WriteString("Welcome to the Pokedex!\nUsage:\n\n")
 
-	commands := Commands()
-
-	commandNames := make([]string, 0, len(commands))
-	for name := range commands {
+	commandNames := make([]string, 0, len(config.Commands))
+	for name := range config.Commands {
 		commandNames = append(commandNames, name)
 	}
 	sort.Strings(commandNames)
 
 	for _, name := range commandNames {
-		fmt.Fprintf(&message, "%s: %s\n", name, commands[name].Description)
+		fmt.Fprintf(&message, "%s: %s\n", name, config.Commands[name].Description)
 	}
 
 	_, err := fmt.Fprint(out, message.String())
 
-	return ActionContinue, err
+	return cfg.ActionContinue, err
 }

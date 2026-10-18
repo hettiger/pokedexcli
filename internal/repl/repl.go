@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/hettiger/pokedexcli/internal/cmd"
+	"github.com/hettiger/pokedexcli/internal/cfg"
 )
 
-func Run(in io.Reader, out io.Writer) error {
-	commands := cmd.Commands()
+func Run(config *cfg.Config, in io.Reader, out io.Writer) error {
 	scanner := bufio.NewScanner(in)
 
 	for {
@@ -27,7 +26,7 @@ func Run(in io.Reader, out io.Writer) error {
 			continue
 		}
 
-		command, ok := commands[args[0]]
+		command, ok := config.Commands[args[0]]
 		if !ok {
 			if _, err := fmt.Fprintln(out, "Unknown command"); err != nil {
 				return err
@@ -36,7 +35,7 @@ func Run(in io.Reader, out io.Writer) error {
 			continue
 		}
 
-		action, err := command.Callback(out)
+		action, err := command.Callback(config, out)
 		if err != nil {
 			if _, writeErr := fmt.Fprintf(
 				out,
@@ -48,7 +47,7 @@ func Run(in io.Reader, out io.Writer) error {
 			}
 		}
 
-		if action == cmd.ActionExit {
+		if action == cfg.ActionExit {
 			break
 		}
 	}

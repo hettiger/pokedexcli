@@ -1,7 +1,9 @@
 package cmd
 
-func Commands() map[string]Command {
-	return map[string]Command{
+import "github.com/hettiger/pokedexcli/internal/cfg"
+
+func Commands() map[string]cfg.Command {
+	return map[string]cfg.Command{
 		"exit": {
 			Name:        "exit",
 			Description: "Exit the Pokedex",

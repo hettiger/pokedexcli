@@ -7,6 +7,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/hettiger/pokedexcli/internal/cfg"
+	"github.com/hettiger/pokedexcli/internal/cmd"
 	"github.com/hettiger/pokedexcli/internal/repl"
 	"github.com/stretchr/testify/require"
 )
@@ -14,6 +16,8 @@ import (
 func TestRun(t *testing.T) {
 	t.Run("it can show help and exit", func(t *testing.T) {
 		t.Parallel()
+
+		config := &cfg.Config{Commands: cmd.Commands()}
 
 		var out bytes.Buffer
 
@@ -24,7 +28,7 @@ func TestRun(t *testing.T) {
 
 		want := fmt.Sprintf("Pokedex > %sPokedex > Closing the Pokedex... Goodbye!\n", help)
 
-		err = repl.Run(strings.NewReader(input), &out)
+		err = repl.Run(config, strings.NewReader(input), &out)
 		require.NoError(t, err)
 
 		require.Equal(t, want, out.String())
@@ -33,12 +37,14 @@ func TestRun(t *testing.T) {
 	t.Run("it warns on invalid commands", func(t *testing.T) {
 		t.Parallel()
 
+		config := &cfg.Config{Commands: cmd.Commands()}
+
 		var out bytes.Buffer
 
 		input := "invalid\n"
 		want := "Pokedex > Unknown command\nPokedex > "
 
-		err := repl.Run(strings.NewReader(input), &out)
+		err := repl.Run(config, strings.NewReader(input), &out)
 		require.NoError(t, err)
 
 		require.Equal(t, want, out.String())

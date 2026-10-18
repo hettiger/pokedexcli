@@ -1,4 +1,4 @@
-package cmd
+package cfg
 
 type Action int
 
