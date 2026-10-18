@@ -14,5 +14,15 @@ func Commands() map[string]cfg.Command {
 			Description: "Displays a help message",
 			Callback:    commandHelp,
 		},
+		"map": {
+			Name:        "map",
+			Description: "Displays the names of 20 location areas in the Pokemon world",
+			Callback:    commandMap,
+		},
+		"mapb": {
+			Name:        "mapb",
+			Description: "Displays the names of 20 location areas in the Pokemon world but in backward direction",
+			Callback:    commandMapb,
+		},
 	}
 }

@@ -3,3 +3,5 @@ Usage:
 
 exit: Exit the Pokedex
 help: Displays a help message
+map: Displays the names of 20 location areas in the Pokemon world
+mapb: Displays the names of 20 location areas in the Pokemon world but in backward direction
