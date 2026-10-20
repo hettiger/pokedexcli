@@ -13,11 +13,7 @@ import (
 )
 
 func main() {
-	ttl, err := time.ParseDuration("10s")
-	if err != nil {
-		log.Fatalf("failed to parse duration: %v", err)
-	}
-	cache := pokecache.NewCache(ttl)
+	cache := pokecache.NewCache(10 * time.Second)
 
 	config := &cfg.Config{
 		Commands: cmd.Commands(),
