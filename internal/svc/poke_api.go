@@ -2,6 +2,7 @@ package svc
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -35,6 +36,8 @@ func NewPokeAPI(baseURL string, cache cacher) *PokeAPI {
 	}
 }
 
+var ErrNonSuccessStatus = errors.New("non-successful PokéAPI response")
+
 func (p *PokeAPI) LocationAreas(direction Direction) (dto.APIResourceList[dto.LocationArea], error) {
 	url := p.baseURL + "/location-area"
 
@@ -58,7 +61,7 @@ func (p *PokeAPI) LocationAreas(direction Direction) (dto.APIResourceList[dto.Lo
 		defer res.Body.Close()
 
 		if res.StatusCode >= 300 {
-			err := fmt.Errorf("non-successful PokéAPI response: %s", res.Status)
+			err := fmt.Errorf("%w: status %d", ErrNonSuccessStatus, res.StatusCode)
 			return dto.APIResourceList[dto.LocationArea]{}, err
 		}
 
