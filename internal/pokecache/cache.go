@@ -61,7 +61,12 @@ func (c *Cache) reapLoop() {
 		}
 	}
 
-	for range time.Tick(c.interval) {
+	reap()
+
+	ticker := time.NewTicker(c.interval)
+	defer ticker.Stop()
+
+	for range ticker.C {
 		reap()
 	}
 }
