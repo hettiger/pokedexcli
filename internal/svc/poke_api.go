@@ -11,6 +11,7 @@ import (
 
 type PokeAPI struct {
 	baseURL               string
+	cache                 cacher
 	nextLocationAreas     *string
 	previousLocationAreas *string
 }
@@ -22,9 +23,15 @@ const (
 	Backward
 )
 
-func NewPokeAPI(baseURL string) *PokeAPI {
+type cacher interface {
+	Add(key string, val []byte)
+	Get(key string) ([]byte, bool)
+}
+
+func NewPokeAPI(baseURL string, cache cacher) *PokeAPI {
 	return &PokeAPI{
 		baseURL: baseURL,
+		cache:   cache,
 	}
 }
 
@@ -42,20 +49,25 @@ func (p *PokeAPI) LocationAreas(direction Direction) (dto.APIResourceList[dto.Lo
 		url = *p.previousLocationAreas
 	}
 
-	res, err := http.Get(url)
-	if err != nil {
-		return dto.APIResourceList[dto.LocationArea]{}, err
-	}
-	defer res.Body.Close()
+	data, ok := p.cache.Get(url)
+	if !ok {
+		res, err := http.Get(url)
+		if err != nil {
+			return dto.APIResourceList[dto.LocationArea]{}, err
+		}
+		defer res.Body.Close()
 
-	if res.StatusCode >= 300 {
-		err := fmt.Errorf("non-successful PokéAPI response: %s", res.Status)
-		return dto.APIResourceList[dto.LocationArea]{}, err
-	}
+		if res.StatusCode >= 300 {
+			err := fmt.Errorf("non-successful PokéAPI response: %s", res.Status)
+			return dto.APIResourceList[dto.LocationArea]{}, err
+		}
 
-	data, err := io.ReadAll(res.Body)
-	if err != nil {
-		return dto.APIResourceList[dto.LocationArea]{}, err
+		data, err = io.ReadAll(res.Body)
+		if err != nil {
+			return dto.APIResourceList[dto.LocationArea]{}, err
+		}
+
+		p.cache.Add(url, data)
 	}
 
 	areas := dto.APIResourceList[dto.LocationArea]{}
