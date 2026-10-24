@@ -35,7 +35,7 @@ func Run(config *cfg.Config, in io.Reader, out io.Writer) error {
 			continue
 		}
 
-		action, err := command.Callback(config, out)
+		action, err := command.Callback(config, out, args[1:]...)
 		if err != nil {
 			if _, writeErr := fmt.Fprintf(
 				out,

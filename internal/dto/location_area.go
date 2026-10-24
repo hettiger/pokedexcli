@@ -7,4 +7,7 @@ type LocationArea struct {
 
 	// The name for this resource.
 	Name string `json:"name"`
+
+	// A list of Pokémon that can be encountered in this area.
+	PokemonEncounters []PokemonEncounter `json:"pokemon_encounters"`
 }

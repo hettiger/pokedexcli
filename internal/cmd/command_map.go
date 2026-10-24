@@ -10,7 +10,7 @@ import (
 
 // commandMap displays the names of 20 location areas in the Pokemon world.
 // Each subsequent call to map displays the next 20 locations.
-func commandMap(config *cfg.Config, out io.Writer) (cfg.Action, error) {
+func commandMap(config *cfg.Config, out io.Writer, args ...string) (cfg.Action, error) {
 	areas, err := config.PokeAPI.LocationAreas(svc.Forward)
 	if err != nil {
 		return cfg.ActionContinue, err

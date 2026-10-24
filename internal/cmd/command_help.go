@@ -9,7 +9,7 @@ import (
 	"github.com/hettiger/pokedexcli/internal/cfg"
 )
 
-func commandHelp(config *cfg.Config, out io.Writer) (cfg.Action, error) {
+func commandHelp(config *cfg.Config, out io.Writer, args ...string) (cfg.Action, error) {
 	var message strings.Builder
 
 	message.WriteString("Welcome to the Pokedex!\nUsage:\n\n")
@@ -21,7 +21,7 @@ func commandHelp(config *cfg.Config, out io.Writer) (cfg.Action, error) {
 	sort.Strings(commandNames)
 
 	for _, name := range commandNames {
-		fmt.Fprintf(&message, "%s: %s\n", name, config.Commands[name].Description)
+		fmt.Fprintf(&message, "%s: %s\n", config.Commands[name].Signature, config.Commands[name].Description)
 	}
 
 	_, err := fmt.Fprint(out, message.String())

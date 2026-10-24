@@ -15,4 +15,5 @@ type Config struct {
 
 type PokeAPI interface {
 	LocationAreas(direction svc.Direction) (dto.APIResourceList[dto.LocationArea], error)
+	LocationArea(name string) (dto.LocationArea, error)
 }

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 
 	"github.com/hettiger/pokedexcli/internal/dto"
 )
@@ -82,4 +83,36 @@ func (p *PokeAPI) LocationAreas(direction Direction) (dto.APIResourceList[dto.Lo
 	p.previousLocationAreas = areas.Previous
 
 	return areas, nil
+}
+
+func (p *PokeAPI) LocationArea(name string) (dto.LocationArea, error) {
+	url := p.baseURL + "/location-area/" + url.PathEscape(name)
+
+	data, ok := p.cache.Get(url)
+	if !ok {
+		res, err := http.Get(url)
+		if err != nil {
+			return dto.LocationArea{}, err
+		}
+		defer res.Body.Close()
+
+		if res.StatusCode >= 300 {
+			err := fmt.Errorf("%w: status %d", ErrNonSuccessStatus, res.StatusCode)
+			return dto.LocationArea{}, err
+		}
+
+		data, err = io.ReadAll(res.Body)
+		if err != nil {
+			return dto.LocationArea{}, err
+		}
+
+		p.cache.Add(url, data)
+	}
+
+	area := dto.LocationArea{}
+	if err := json.Unmarshal(data, &area); err != nil {
+		return dto.LocationArea{}, err
+	}
+
+	return area, nil
 }

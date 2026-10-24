@@ -7,7 +7,7 @@ import (
 	"github.com/hettiger/pokedexcli/internal/cfg"
 )
 
-func commandExit(config *cfg.Config, out io.Writer) (cfg.Action, error) {
+func commandExit(config *cfg.Config, out io.Writer, args ...string) (cfg.Action, error) {
 	_, err := fmt.Fprintln(out, "Closing the Pokedex... Goodbye!")
 
 	return cfg.ActionExit, err

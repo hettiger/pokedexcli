@@ -14,21 +14,23 @@ import (
 func Test_commandMapb(t *testing.T) {
 	cases := []struct {
 		name    string
-		results []tests.LocationAreasFakeResult
+		results []tests.PokeAPIFakeCallResult
 		want    string
 		wantErr error
 	}{
 		{
 			name: "empty",
-			results: []tests.LocationAreasFakeResult{
-				{Direction: svc.Backward},
+			results: []tests.PokeAPIFakeCallResult{
+				tests.LocationAreasFakeResult{
+					Direction: svc.Backward,
+				},
 			},
 			want: "you're on the first page\n",
 		},
 		{
 			name: "two pages",
-			results: []tests.LocationAreasFakeResult{
-				{
+			results: []tests.PokeAPIFakeCallResult{
+				tests.LocationAreasFakeResult{
 					Direction: svc.Backward,
 					Areas: dto.APIResourceList[dto.LocationArea]{
 						Results: []dto.LocationArea{
@@ -36,7 +38,7 @@ func Test_commandMapb(t *testing.T) {
 						},
 					},
 				},
-				{
+				tests.LocationAreasFakeResult{
 					Direction: svc.Backward,
 					Areas: dto.APIResourceList[dto.LocationArea]{
 						Results: []dto.LocationArea{
@@ -45,14 +47,16 @@ func Test_commandMapb(t *testing.T) {
 						},
 					},
 				},
-				{Direction: svc.Backward},
+				tests.LocationAreasFakeResult{
+					Direction: svc.Backward,
+				},
 			},
 			want: "baz\nfoo\nbar\nyou're on the first page\n",
 		},
 		{
 			name: "error",
-			results: []tests.LocationAreasFakeResult{
-				{
+			results: []tests.PokeAPIFakeCallResult{
+				tests.LocationAreasFakeResult{
 					Direction: svc.Backward,
 					Err:       tests.ErrFakeAPI,
 				},
@@ -66,7 +70,7 @@ func Test_commandMapb(t *testing.T) {
 
 			config := &cfg.Config{
 				Commands: Commands(),
-				PokeAPI: &tests.LocationAreasFake{
+				PokeAPI: &tests.PokeAPIFake{
 					T:       t,
 					Results: tt.results,
 				},
