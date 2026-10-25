@@ -8,3 +8,4 @@ help: Displays a help message
 inspect <pokemon_name>: Inspect a caught Pokémon by name
 map: Displays the names of 20 location areas in the Pokemon world
 mapb: Displays the names of 20 location areas in the Pokemon world but in backward direction
+pokedex: Prints a list of all the names of the Pokémon the user has caught.
