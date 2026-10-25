@@ -1,6 +1,7 @@
 Welcome to the Pokedex!
 Usage:
 
+catch <pokemon_name>: Attempt to catch a Pokémon by name
 exit: Exit the Pokedex
 explore <area_name>: Displays the names of all Pokémon found in a given area
 help: Displays a help message

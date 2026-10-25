@@ -34,5 +34,11 @@ func Commands() map[string]cfg.Command {
 			Description: "Displays the names of all Pokémon found in a given area",
 			Callback:    commandExplore,
 		},
+		"catch": {
+			Name:        "catch",
+			Signature:   "catch <pokemon_name>",
+			Description: "Attempt to catch a Pokémon by name",
+			Callback:    commandCatch,
+		},
 	}
 }

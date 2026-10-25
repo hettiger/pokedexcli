@@ -68,13 +68,7 @@ func Test_commandMap(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			config := &cfg.Config{
-				Commands: Commands(),
-				PokeAPI: &tests.PokeAPIFake{
-					T:       t,
-					Results: tt.results,
-				},
-			}
+			config := tests.NewConfigFake(Commands(), tests.NewPokeAPIFake(t, tt.results))
 
 			var output bytes.Buffer
 

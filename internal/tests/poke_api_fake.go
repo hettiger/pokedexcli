@@ -14,12 +14,20 @@ type PokeAPIFake struct {
 	Results []PokeAPIFakeCallResult
 }
 
+func NewPokeAPIFake(t *testing.T, results []PokeAPIFakeCallResult) *PokeAPIFake {
+	return &PokeAPIFake{
+		T:       t,
+		Results: results,
+	}
+}
+
 type PokeAPIFakeCallResult interface {
 	isPokeAPIFakeCallResult()
 }
 
 func (l LocationAreasFakeResult) isPokeAPIFakeCallResult() {}
 func (l LocationAreaFakeResult) isPokeAPIFakeCallResult()  {}
+func (l PokemonFakeResult) isPokeAPIFakeCallResult()       {}
 
 type LocationAreasFakeResult struct {
 	Direction svc.Direction
@@ -31,6 +39,12 @@ type LocationAreaFakeResult struct {
 	Name string
 	Area dto.LocationArea
 	Err  error
+}
+
+type PokemonFakeResult struct {
+	Name    string
+	Pokemon dto.Pokemon
+	Err     error
 }
 
 func (p *PokeAPIFake) LocationAreas(direction svc.Direction) (dto.APIResourceList[dto.LocationArea], error) {
@@ -51,4 +65,14 @@ func (p *PokeAPIFake) LocationArea(name string) (dto.LocationArea, error) {
 	require.Equal(p.T, result.Name, name)
 	p.Call++
 	return result.Area, result.Err
+}
+
+func (p *PokeAPIFake) Pokemon(name string) (dto.Pokemon, error) {
+	p.T.Helper()
+	require.Less(p.T, p.Call, len(p.Results), "unexpected Pokemon call")
+	result, ok := p.Results[p.Call].(PokemonFakeResult)
+	require.True(p.T, ok, "call %d: expected PokemonFakeResult, got %T", p.Call, p.Results[p.Call])
+	require.Equal(p.T, result.Name, name)
+	p.Call++
+	return result.Pokemon, result.Err
 }

@@ -2,17 +2,13 @@ package cmd
 
 import (
 	"bytes"
-	"fmt"
 	"testing"
 
 	"github.com/hettiger/pokedexcli/internal/cfg"
 	"github.com/hettiger/pokedexcli/internal/dto"
-	"github.com/hettiger/pokedexcli/internal/svc"
 	"github.com/hettiger/pokedexcli/internal/tests"
 	"github.com/stretchr/testify/require"
 )
-
-var Err404 = fmt.Errorf("%w: status %d", svc.ErrNonSuccessStatus, 404)
 
 func Test_commandExplore(t *testing.T) {
 	cases := []struct {
@@ -32,10 +28,10 @@ func Test_commandExplore(t *testing.T) {
 			results: []tests.PokeAPIFakeCallResult{
 				tests.LocationAreaFakeResult{
 					Name: "fake-area",
-					Err:  Err404,
+					Err:  tests.ErrFake404,
 				},
 			},
-			wantErr: Err404,
+			wantErr: tests.ErrFake404,
 		},
 		{
 			name: "existing area, no pokemon encounter",
@@ -103,13 +99,7 @@ func Test_commandExplore(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			config := &cfg.Config{
-				Commands: Commands(),
-				PokeAPI: &tests.PokeAPIFake{
-					T:       t,
-					Results: tt.results,
-				},
-			}
+			config := tests.NewConfigFake(Commands(), tests.NewPokeAPIFake(t, tt.results))
 
 			var output bytes.Buffer
 

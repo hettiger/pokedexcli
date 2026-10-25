@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hettiger/pokedexcli/internal/cfg"
 	"github.com/hettiger/pokedexcli/internal/cmd"
 	"github.com/hettiger/pokedexcli/internal/repl"
+	"github.com/hettiger/pokedexcli/internal/tests"
 	"github.com/stretchr/testify/require"
 )
 
@@ -17,7 +17,7 @@ func TestRun(t *testing.T) {
 	t.Run("it can show help and exit", func(t *testing.T) {
 		t.Parallel()
 
-		config := &cfg.Config{Commands: cmd.Commands()}
+		config := tests.NewConfigFake(cmd.Commands(), tests.NewPokeAPIFake(t, nil))
 
 		var out bytes.Buffer
 
@@ -37,7 +37,7 @@ func TestRun(t *testing.T) {
 	t.Run("it warns on invalid commands", func(t *testing.T) {
 		t.Parallel()
 
-		config := &cfg.Config{Commands: cmd.Commands()}
+		config := tests.NewConfigFake(cmd.Commands(), tests.NewPokeAPIFake(t, nil))
 
 		var out bytes.Buffer
 

@@ -13,12 +13,10 @@ import (
 )
 
 func main() {
+	commands := cmd.Commands()
 	cache := pokecache.NewCache(10 * time.Second)
-
-	config := &cfg.Config{
-		Commands: cmd.Commands(),
-		PokeAPI:  svc.NewPokeAPI("https://pokeapi.co/api/v2", cache),
-	}
+	pokeAPI := svc.NewPokeAPI("https://pokeapi.co/api/v2", cache)
+	config := cfg.NewConfig(commands, pokeAPI)
 
 	if err := repl.Run(config, os.Stdin, os.Stdout); err != nil {
 		log.Fatal(err)

@@ -116,3 +116,35 @@ func (p *PokeAPI) LocationArea(name string) (dto.LocationArea, error) {
 
 	return area, nil
 }
+
+func (p *PokeAPI) Pokemon(name string) (dto.Pokemon, error) {
+	url := p.baseURL + "/pokemon/" + url.PathEscape(name)
+
+	data, ok := p.cache.Get(url)
+	if !ok {
+		res, err := http.Get(url)
+		if err != nil {
+			return dto.Pokemon{}, err
+		}
+		defer res.Body.Close()
+
+		if res.StatusCode >= 300 {
+			err := fmt.Errorf("%w: status %d", ErrNonSuccessStatus, res.StatusCode)
+			return dto.Pokemon{}, err
+		}
+
+		data, err = io.ReadAll(res.Body)
+		if err != nil {
+			return dto.Pokemon{}, err
+		}
+
+		p.cache.Add(url, data)
+	}
+
+	pokemon := dto.Pokemon{}
+	if err := json.Unmarshal(data, &pokemon); err != nil {
+		return dto.Pokemon{}, err
+	}
+
+	return pokemon, nil
+}
