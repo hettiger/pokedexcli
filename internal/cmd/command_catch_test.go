@@ -20,7 +20,7 @@ func Test_commandCatch(t *testing.T) {
 	}{
 		{
 			name:    "missing arg",
-			wantErr: ErrCommandCatchMissingPokemonName,
+			wantErr: ErrMissingPokemonName,
 		},
 		{
 			name: "missing pokemon",

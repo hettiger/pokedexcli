@@ -5,5 +5,6 @@ catch <pokemon_name>: Attempt to catch a Pokémon by name
 exit: Exit the Pokedex
 explore <area_name>: Displays the names of all Pokémon found in a given area
 help: Displays a help message
+inspect <pokemon_name>: Inspect a caught Pokémon by name
 map: Displays the names of 20 location areas in the Pokemon world
 mapb: Displays the names of 20 location areas in the Pokemon world but in backward direction

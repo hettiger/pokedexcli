@@ -1,31 +1,47 @@
 package user
 
-import "slices"
+import (
+	"cmp"
+	"slices"
+
+	"github.com/hettiger/pokedexcli/internal/dto"
+)
 
 type pokedex struct {
-	caught map[string]struct{}
+	caught map[string]dto.Pokemon
 }
 
 func newPokedex() pokedex {
 	return pokedex{
-		caught: make(map[string]struct{}),
+		caught: make(map[string]dto.Pokemon),
 	}
 }
 
 // Catch adds the given Pokémon to the caught set
-func (p *pokedex) Catch(pokemon string) {
-	p.caught[pokemon] = struct{}{}
+func (p *pokedex) Catch(pokemon dto.Pokemon) {
+	p.caught[pokemon.Name] = pokemon
+}
+
+func (p *pokedex) Inspect(name string) (dto.Pokemon, bool) {
+	pokemon, ok := p.caught[name]
+	if !ok {
+		return dto.Pokemon{}, false
+	}
+
+	return pokemon, true
 }
 
 // Caught returns all Pokémon caught in sorted order.
-func (p *pokedex) Caught() []string {
-	names := make([]string, 0, len(p.caught))
+func (p *pokedex) Caught() []dto.Pokemon {
+	pokemon := make([]dto.Pokemon, 0, len(p.caught))
 
-	for name := range p.caught {
-		names = append(names, name)
+	for _, p := range p.caught {
+		pokemon = append(pokemon, p)
 	}
 
-	slices.Sort(names)
+	slices.SortFunc(pokemon, func(a, b dto.Pokemon) int {
+		return cmp.Compare(a.Name, b.Name)
+	})
 
-	return names
+	return pokemon
 }

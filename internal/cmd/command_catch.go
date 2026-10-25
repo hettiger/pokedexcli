@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"strings"
@@ -9,13 +8,11 @@ import (
 	"github.com/hettiger/pokedexcli/internal/cfg"
 )
 
-var ErrCommandCatchMissingPokemonName = errors.New("missing pokemon name")
-
 func commandCatch(config *cfg.Config, out io.Writer, args ...string) (cfg.Action, error) {
 	var message strings.Builder
 
 	if len(args) < 1 {
-		return cfg.ActionContinue, ErrCommandCatchMissingPokemonName
+		return cfg.ActionContinue, ErrMissingPokemonName
 	}
 
 	pokemonName := args[0]
@@ -32,13 +29,13 @@ func commandCatch(config *cfg.Config, out io.Writer, args ...string) (cfg.Action
 	fmt.Fprintf(&message, "Chance: %.2f%%\n", chance)
 
 	if config.Rand() < chance {
-		config.User.Pokedex.Catch(pokemonName)
+		config.User.Pokedex.Catch(pokemon)
 		fmt.Fprintf(&message, "%s was caught!\n", pokemonName)
 	} else {
 		fmt.Fprintf(&message, "%s escaped!\n", pokemonName)
 	}
 
-	fmt.Fprint(out, message.String())
+	_, err = fmt.Fprint(out, message.String())
 
-	return cfg.ActionContinue, nil
+	return cfg.ActionContinue, err
 }

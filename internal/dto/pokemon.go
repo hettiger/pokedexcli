@@ -17,6 +17,18 @@ type Pokemon struct {
 
 	// The base experience gained for defeating this Pokémon.
 	BaseExperience int `json:"base_experience"`
+
+	// The height of this Pokémon in decimetres.
+	Height int `json:"height"`
+
+	// The weight of this Pokémon in hectograms.
+	Weight int `json:"weight"`
+
+	// A list of base stat values for this Pokémon.
+	Stats []PokemonStat `json:"stats"`
+
+	// A list of details showing types this Pokémon has.
+	Types []PokemonType `json:"types"`
 }
 
 // Chance returns a catch chance from 5% to 90% using exponential decay.
